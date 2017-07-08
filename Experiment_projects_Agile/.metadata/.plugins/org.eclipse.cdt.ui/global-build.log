@@ -1,0 +1,187 @@
+18:50:28 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+C:\SystemWorkbench\Experiment_projects_Agile\OC_mode\Tim1_ch1toggle_ch2Active\Debug
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F103xB -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Device/ST/STM32F1xx/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+Finished building: ../Src/main.c
+ 
+Building target: Tim1_ch1toggle_ch2Active.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -specs=nosys.specs -specs=nano.specs -T"../STM32F103C8Tx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "Tim1_ch1toggle_ch2Active.elf" @"objects.list"   -lm
+Finished building target: Tim1_ch1toggle_ch2Active.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "Tim1_ch1toggle_ch2Active.elf" "Tim1_ch1toggle_ch2Active.bin"
+arm-none-eabi-size "Tim1_ch1toggle_ch2Active.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5980	     28	   1716	   7724	   1e2c	Tim1_ch1toggle_ch2Active.elf
+ 
+18:50:32 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+make: Nothing to be done for `all'.
+18:51:20 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+C:\SystemWorkbench\Experiment_projects_Agile\OC_mode\Tim1_ch1toggle_ch2Active\Debug
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F103xB -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Device/ST/STM32F1xx/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+Finished building: ../Src/main.c
+ 
+Building target: Tim1_ch1toggle_ch2Active.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -specs=nosys.specs -specs=nano.specs -T"../STM32F103C8Tx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "Tim1_ch1toggle_ch2Active.elf" @"objects.list"   -lm
+Finished building target: Tim1_ch1toggle_ch2Active.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "Tim1_ch1toggle_ch2Active.elf" "Tim1_ch1toggle_ch2Active.bin"
+arm-none-eabi-size "Tim1_ch1toggle_ch2Active.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5980	     28	   1716	   7724	   1e2c	Tim1_ch1toggle_ch2Active.elf
+ 
+18:51:29 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+make: Nothing to be done for `all'.
+18:52:30 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+C:\SystemWorkbench\Experiment_projects_Agile\OC_mode\Tim1_ch1toggle_ch2Active\Debug
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F103xB -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Device/ST/STM32F1xx/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+Finished building: ../Src/main.c
+ 
+Building target: Tim1_ch1toggle_ch2Active.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -specs=nosys.specs -specs=nano.specs -T"../STM32F103C8Tx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "Tim1_ch1toggle_ch2Active.elf" @"objects.list"   -lm
+Finished building target: Tim1_ch1toggle_ch2Active.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "Tim1_ch1toggle_ch2Active.elf" "Tim1_ch1toggle_ch2Active.bin"
+arm-none-eabi-size "Tim1_ch1toggle_ch2Active.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5976	     28	   1716	   7720	   1e28	Tim1_ch1toggle_ch2Active.elf
+ 
+18:52:33 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+make: Nothing to be done for `all'.
+18:52:46 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+C:\SystemWorkbench\Experiment_projects_Agile\OC_mode\Tim1_ch1toggle_ch2Active\Debug
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F103xB -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Device/ST/STM32F1xx/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+Finished building: ../Src/main.c
+ 
+Building target: Tim1_ch1toggle_ch2Active.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -specs=nosys.specs -specs=nano.specs -T"../STM32F103C8Tx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "Tim1_ch1toggle_ch2Active.elf" @"objects.list"   -lm
+Finished building target: Tim1_ch1toggle_ch2Active.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "Tim1_ch1toggle_ch2Active.elf" "Tim1_ch1toggle_ch2Active.bin"
+arm-none-eabi-size "Tim1_ch1toggle_ch2Active.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5980	     28	   1716	   7724	   1e2c	Tim1_ch1toggle_ch2Active.elf
+ 
+18:52:49 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+make: Nothing to be done for `all'.
+18:53:43 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+C:\SystemWorkbench\Experiment_projects_Agile\OC_mode\Tim1_ch1toggle_ch2Active\Debug
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F103xB -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Device/ST/STM32F1xx/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+Finished building: ../Src/main.c
+ 
+Building target: Tim1_ch1toggle_ch2Active.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -specs=nosys.specs -specs=nano.specs -T"../STM32F103C8Tx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "Tim1_ch1toggle_ch2Active.elf" @"objects.list"   -lm
+Finished building target: Tim1_ch1toggle_ch2Active.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "Tim1_ch1toggle_ch2Active.elf" "Tim1_ch1toggle_ch2Active.bin"
+arm-none-eabi-size "Tim1_ch1toggle_ch2Active.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5984	     28	   1716	   7728	   1e30	Tim1_ch1toggle_ch2Active.elf
+ 
+18:53:47 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+make: Nothing to be done for `all'.
+18:53:55 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+C:\SystemWorkbench\Experiment_projects_Agile\OC_mode\Tim1_ch1toggle_ch2Active\Debug
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F103xB -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Device/ST/STM32F1xx/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+Finished building: ../Src/main.c
+ 
+Building target: Tim1_ch1toggle_ch2Active.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -specs=nosys.specs -specs=nano.specs -T"../STM32F103C8Tx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "Tim1_ch1toggle_ch2Active.elf" @"objects.list"   -lm
+Finished building target: Tim1_ch1toggle_ch2Active.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "Tim1_ch1toggle_ch2Active.elf" "Tim1_ch1toggle_ch2Active.bin"
+arm-none-eabi-size "Tim1_ch1toggle_ch2Active.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5980	     28	   1716	   7724	   1e2c	Tim1_ch1toggle_ch2Active.elf
+ 
+18:53:58 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+make: Nothing to be done for `all'.
+18:54:00 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+make: Nothing to be done for `all'.
+18:54:15 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+C:\SystemWorkbench\Experiment_projects_Agile\OC_mode\Tim1_ch1toggle_ch2Active\Debug
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F103xB -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Device/ST/STM32F1xx/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+Finished building: ../Src/main.c
+ 
+Building target: Tim1_ch1toggle_ch2Active.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -specs=nosys.specs -specs=nano.specs -T"../STM32F103C8Tx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "Tim1_ch1toggle_ch2Active.elf" @"objects.list"   -lm
+Finished building target: Tim1_ch1toggle_ch2Active.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "Tim1_ch1toggle_ch2Active.elf" "Tim1_ch1toggle_ch2Active.bin"
+arm-none-eabi-size "Tim1_ch1toggle_ch2Active.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5984	     28	   1716	   7728	   1e30	Tim1_ch1toggle_ch2Active.elf
+ 
+18:54:18 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+make: Nothing to be done for `all'.
+18:54:51 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+C:\SystemWorkbench\Experiment_projects_Agile\OC_mode\Tim1_ch1toggle_ch2Active\Debug
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F103xB -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Device/ST/STM32F1xx/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Drivers/CMSIS/Include" -I"C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+Finished building: ../Src/main.c
+ 
+Building target: Tim1_ch1toggle_ch2Active.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -specs=nosys.specs -specs=nano.specs -T"../STM32F103C8Tx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "Tim1_ch1toggle_ch2Active.elf" @"objects.list"   -lm
+Finished building target: Tim1_ch1toggle_ch2Active.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "Tim1_ch1toggle_ch2Active.elf" "Tim1_ch1toggle_ch2Active.bin"
+arm-none-eabi-size "Tim1_ch1toggle_ch2Active.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5988	     28	   1716	   7732	   1e34	Tim1_ch1toggle_ch2Active.elf
+ 
+18:54:54 **** Incremental Build of configuration Debug for project Tim1_ch1toggle_ch2Active ****
+make all 
+make: Nothing to be done for `all'.

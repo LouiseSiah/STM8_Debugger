@@ -1,0 +1,16 @@
+Debug/*
+Src/Backup/*
+Inc/Backup/*
+Experiment_projects_Agile/PWM_output_try/Debug/*
+Experiment_projects_Agile/PWM_output_try/Src/Backup/*
+Experiment_projects_Agile/PWM_output_try/Inc/Backup/*
+Experiment_projects_Agile/Timer_interrupt/Debug/*
+Experiment_projects_Agile/Timer_interrupt/Src/Backup/*
+Experiment_projects_Agile/Timer_interrupt/Inc/Backup/*
+Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Debug/*
+Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Src/Backup/*
+Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc/Backup/*
+Experiment_projects_Agile/Timer_interrupt/Debug*
+Experiment_projects_Agile/Timer_interrupt/Inc/Backup/*
+Experiment_projects_Agile/Timer_interrupt/Src/Backup/*
+Experiment_projects_Agile/Timer_InputCapture/TIM1_chn1PWMoutput_TIM3_ch1InputCapture/Debug/*
