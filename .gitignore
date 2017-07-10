@@ -14,3 +14,4 @@ Experiment_projects_Agile/Timer_interrupt/Debug*
 Experiment_projects_Agile/Timer_interrupt/Inc/Backup/*
 Experiment_projects_Agile/Timer_interrupt/Src/Backup/*
 Experiment_projects_Agile/Timer_InputCapture/TIM1_chn1PWMoutput_TIM3_ch1InputCapture/Debug/*
+Experiment_projects_Agile/Timer_InputCapture/DMA_OC_Toggle/TIM1_channel1_DMA_OCtoggle/Debug/*
