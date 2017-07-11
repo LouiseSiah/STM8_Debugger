@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc
+HeaderPath=C:/Users/user2/Desktop/STM8_Debugger/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Inc
 HeaderFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;
-SourcePath=C:/SystemWorkbench/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Src
+SourcePath=C:/Users/user2/Desktop/STM8_Debugger/Experiment_projects_Agile/OC_mode/Tim1_ch1toggle_ch2Active/Src
 SourceFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;stm32f1xx_it.c;stm32f1xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

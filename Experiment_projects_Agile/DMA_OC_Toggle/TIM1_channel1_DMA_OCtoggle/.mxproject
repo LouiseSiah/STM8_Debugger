@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/SystemWorkbench/Experiment_projects_Agile/DMA_OC_Toggle/TIM1_channel1_DMA_OCtoggle/Inc
+HeaderPath=C:/Users/user2/Desktop/STM8_Debugger/Experiment_projects_Agile/DMA_OC_Toggle/TIM1_channel1_DMA_OCtoggle/Inc
 HeaderFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;
-SourcePath=C:/SystemWorkbench/Experiment_projects_Agile/DMA_OC_Toggle/TIM1_channel1_DMA_OCtoggle/Src
+SourcePath=C:/Users/user2/Desktop/STM8_Debugger/Experiment_projects_Agile/DMA_OC_Toggle/TIM1_channel1_DMA_OCtoggle/Src
 SourceFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;stm32f1xx_it.c;stm32f1xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]
