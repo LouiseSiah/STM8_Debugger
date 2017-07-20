@@ -46,6 +46,9 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define testPin GPIO_PIN_2
+#define testPin_Port GPIOA
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

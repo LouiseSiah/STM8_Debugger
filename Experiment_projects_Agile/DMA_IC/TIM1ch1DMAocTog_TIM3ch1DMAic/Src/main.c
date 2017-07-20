@@ -61,7 +61,7 @@ TIM_OC_InitTypeDef sConfig;
 TIM_IC_InitTypeDef sICConfig;
 
 /* Capture Compare buffer */
-uint32_t aCCValue_Buffer[3] = { 0, 0};//, 0 };
+uint32_t aCCValue_Buffer[2] = { 0, 0};//, 0 };
 uint32_t icBuffer1[4] = {0, 0, 0, 0};
 uint32_t icBuffer2[4] = {0, 0, 0, 0};
 
@@ -126,16 +126,16 @@ int main(void)
   	uhTimerPeriod = (uint32_t) ((SystemCoreClock / 360000) - 1);
   	//minumum pulse to put is 12??
   	aCCValue_Buffer[0] =  //12;//2;//8999;
-  			(uint32_t) (((uint32_t) 25 * (uhTimerPeriod - 1)) / 100);
+  			(uint32_t) (((uint32_t) 10 * (uhTimerPeriod - 1)) / 100);
   	aCCValue_Buffer[1] = //(uint32_t) ((SystemCoreClock / 4000000) - 1 + aCCValue_Buffer[0]);
-  			(uint32_t) (((uint32_t) 50 * (uhTimerPeriod - 1)) / 100);
-  	aCCValue_Buffer[2] = //(uint32_t) ((SystemCoreClock / 400000) - 1 + aCCValue_Buffer[1]);
-  			(uint32_t) (((uint32_t) 90 * (uhTimerPeriod - 1)) / 100);
+  			(uint32_t) (((uint32_t) 30 * (uhTimerPeriod - 1)) / 100);
+//  	aCCValue_Buffer[2] = //(uint32_t) ((SystemCoreClock / 400000) - 1 + aCCValue_Buffer[1]);
+//  			(uint32_t) (((uint32_t) 75 * (uhTimerPeriod - 1)) / 100);
 //  	aCCValue_Buffer[3] = //17998;
 //  				(uint32_t) (((uint32_t) 95 * (uhTimerPeriod - 1)) / 100);
 
   	TimHandle3.Instance = TIM3;
-  	TIM3->CNT = 0;
+//  	TIM3->CNT = 0;
   	TimHandle3.Init.Period = uhTimerPeriod;
   	TimHandle3.Init.RepetitionCounter = 0;
   	TimHandle3.Init.Prescaler = 0;
@@ -146,90 +146,109 @@ int main(void)
   		Error_Handler();
   	}
 
-  	/*##-2- Configure the PWM channel 3 ########################################*/
+	__HAL_TIM_CLEAR_FLAG(&TimHandle3, TIM_FLAG_UPDATE);
   	sConfig.OCMode = TIM_OCMODE_FORCED_ACTIVE;
-  	sConfig.OCPolarity = TIM_OCPOLARITY_HIGH;
+  	sConfig.OCPolarity = TIM_OCPOLARITY_HIGH;//TIM_OCPOLARITY_HIGH;
+//  	sConfig.Pulse = uhTimerPeriod;
 
 	if (HAL_TIM_OC_ConfigChannel(&TimHandle3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
   	{
-  		/* Configuration Error */
   		Error_Handler();
   	}
-
-  	if (HAL_TIM_OC_Start_DMA(&TimHandle3, TIM_CHANNEL_1, aCCValue_Buffer, 4) != HAL_OK)
+  	if (HAL_TIM_OC_Start(&TimHandle3, TIM_CHANNEL_1))//, TIM_CHANNEL_1, aCCValue_Buffer, 4) != HAL_OK)
   	{
-  		/* Starting PWM generation Error */
   		Error_Handler();
   	}
 
-  	sConfig.OCMode = TIM_OCMODE_TOGGLE;
-  	sConfig.OCPolarity = TIM_OCPOLARITY_HIGH;
-  	sConfig.Pulse = aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
-  	if (HAL_TIM_OC_ConfigChannel(&TimHandle3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
+//  	while(__HAL_TIM_GET_FLAG(&TimHandle3, TIM_FLAG_CC1) != SET);
+  	HAL_GPIO_WritePin(testPin_Port, testPin, GPIO_PIN_SET);
+
+  	sConfig.OCMode = TIM_OCMODE_FORCED_INACTIVE;
+//  	sConfig.OCPolarity = TIM_OCPOLARITY_HIGH;//TIM_OCPOLARITY_HIGH;
+//  	sConfig.Pulse = uhTimerPeriod;
+
+	if (HAL_TIM_OC_ConfigChannel(&TimHandle3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
   	{
-  		/* Configuration Error */
   		Error_Handler();
   	}
-
-  	/*##-3- Start PWM signal generation in DMA mode ############################*/
-  	if (HAL_TIM_OC_Start_DMA(&TimHandle3, TIM_CHANNEL_1, aCCValue_Buffer, 3) != HAL_OK)
+  	if (HAL_TIM_OC_Start(&TimHandle3, TIM_CHANNEL_1))//, TIM_CHANNEL_1, aCCValue_Buffer, 4) != HAL_OK)
   	{
-  		/* Starting PWM generation Error */
   		Error_Handler();
   	}
 
-
-  	TimHandle2.Instance = TIM2;
-  	TimHandle2.Init.Period            = 0xFFFFFFFF;
-	TimHandle2.Init.Prescaler         = 0;
-	TimHandle2.Init.ClockDivision     = 0;
-	TimHandle2.Init.CounterMode       = TIM_COUNTERMODE_UP;
-	TimHandle2.Init.RepetitionCounter = 0;
-
-    if(HAL_TIM_IC_Init(&TimHandle2) != HAL_OK)
-    {
-      /* Initialization Error */
-      Error_Handler();
-    }
-
-    /* Configure the Input Capture of channel 2 */
-    sICConfig.ICPolarity  = TIM_ICPOLARITY_FALLING;
-    sICConfig.ICSelection = TIM_ICSELECTION_DIRECTTI;
-    sICConfig.ICPrescaler = TIM_ICPSC_DIV1;
-    sICConfig.ICFilter    = 0;
-    if(HAL_TIM_IC_ConfigChannel(&TimHandle2, &sICConfig, TIM_CHANNEL_2) != HAL_OK)
-    {
-      /* Configuration Error */
-      Error_Handler();
-    }
-
-//    #ifdef FALLING_EDGE_CAPTURE
-      sICConfig.ICPolarity  = TIM_ICPOLARITY_RISING;
-      sICConfig.ICSelection = TIM_ICSELECTION_INDIRECTTI;
-      sICConfig.ICPrescaler = TIM_ICPSC_DIV1;
-      sICConfig.ICFilter    = 0;
-      if(HAL_TIM_IC_ConfigChannel(&TimHandle2, &sICConfig, TIM_CHANNEL_1) != HAL_OK)
-      {
-        /* Configuration Error */
-        Error_Handler();
-      }
+//  	while(__HAL_TIM_GET_FLAG(&TimHandle3, TIM_FLAG_CC1) != SET);
+  	HAL_GPIO_WritePin(testPin_Port, testPin, GPIO_PIN_RESET);
 
 
-      sICConfig.ICPolarity  = TIM_ICPOLARITY_FALLING;
 
-     if (HAL_TIM_IC_Start_DMA(&TimHandle2, TIM_CHANNEL_2, icBuffer1, 5) != HAL_OK)
-     {
-       /* Initialization Error */
-       Error_Handler();
-     }
+//  	sConfig.OCMode = TIM_OCMODE_TOGGLE;
+//  	sConfig.OCPolarity = TIM_OCPOLARITY_HIGH;
+//  	sConfig.Pulse = aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
+//  	if (HAL_TIM_OC_ConfigChannel(&TimHandle3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
+//  	{
+//  		/* Configuration Error */
+//  		Error_Handler();
+//  	}
+//
+//  	/*##-3- Start PWM signal generation in DMA mode ############################*/
+//  	if (HAL_TIM_OC_Start_DMA(&TimHandle3, TIM_CHANNEL_1, aCCValue_Buffer, 3) != HAL_OK)
+//  	{
+//  		/* Starting PWM generation Error */
+//  		Error_Handler();
+//  	}
 
 
-     sICConfig.ICPolarity  = TIM_ICPOLARITY_RISING;
-     if (HAL_TIM_IC_Start_DMA(&TimHandle2, TIM_CHANNEL_1, icBuffer1, 5) != HAL_OK)
-    {
-         // Initialization Error - FAILS HERE DUE TO TIM2 HANDLE BEING BUSY
-       Error_Handler();
-     }
+//  	TimHandle2.Instance = TIM2;
+//  	TimHandle2.Init.Period            = 0xFFFFFFFF;
+//	TimHandle2.Init.Prescaler         = 0;
+//	TimHandle2.Init.ClockDivision     = 0;
+//	TimHandle2.Init.CounterMode       = TIM_COUNTERMODE_UP;
+//	TimHandle2.Init.RepetitionCounter = 0;
+//
+//    if(HAL_TIM_IC_Init(&TimHandle2) != HAL_OK)
+//    {
+//      /* Initialization Error */
+//      Error_Handler();
+//    }
+//
+//    /* Configure the Input Capture of channel 2 */
+//    sICConfig.ICPolarity  = TIM_ICPOLARITY_FALLING;
+//    sICConfig.ICSelection = TIM_ICSELECTION_DIRECTTI;
+//    sICConfig.ICPrescaler = TIM_ICPSC_DIV1;
+//    sICConfig.ICFilter    = 0;
+//    if(HAL_TIM_IC_ConfigChannel(&TimHandle2, &sICConfig, TIM_CHANNEL_2) != HAL_OK)
+//    {
+//      /* Configuration Error */
+//      Error_Handler();
+//    }
+//
+////    #ifdef FALLING_EDGE_CAPTURE
+//      sICConfig.ICPolarity  = TIM_ICPOLARITY_RISING;
+//      sICConfig.ICSelection = TIM_ICSELECTION_INDIRECTTI;
+//      sICConfig.ICPrescaler = TIM_ICPSC_DIV1;
+//      sICConfig.ICFilter    = 0;
+//      if(HAL_TIM_IC_ConfigChannel(&TimHandle2, &sICConfig, TIM_CHANNEL_1) != HAL_OK)
+//      {
+//        /* Configuration Error */
+//        Error_Handler();
+//      }
+//
+//
+//      sICConfig.ICPolarity  = TIM_ICPOLARITY_FALLING;
+//
+//     if (HAL_TIM_IC_Start_DMA(&TimHandle2, TIM_CHANNEL_2, icBuffer1, 5) != HAL_OK)
+//     {
+//       /* Initialization Error */
+//       Error_Handler();
+//     }
+//
+//
+//     sICConfig.ICPolarity  = TIM_ICPOLARITY_RISING;
+//     if (HAL_TIM_IC_Start_DMA(&TimHandle2, TIM_CHANNEL_1, icBuffer1, 5) != HAL_OK)
+//    {
+//         // Initialization Error - FAILS HERE DUE TO TIM2 HANDLE BEING BUSY
+//       Error_Handler();
+//     }
 
   /* USER CODE END 2 */
 
@@ -422,9 +441,20 @@ static void MX_DMA_Init(void)
 static void MX_GPIO_Init(void)
 {
 
+  GPIO_InitTypeDef GPIO_InitStruct;
+
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(testPin_Port, testPin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : testPin_Pin */
+  GPIO_InitStruct.Pin = testPin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(testPin_Port, &GPIO_InitStruct);
 
 }
 
