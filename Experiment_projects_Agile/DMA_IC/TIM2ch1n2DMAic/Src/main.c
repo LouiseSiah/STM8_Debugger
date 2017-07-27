@@ -136,15 +136,15 @@ int main(void)
 
 
 
-  htim2.Instance = TIM2;
-  htim2.Init.Period            = 0XFFFF;
-  htim2.Init.Prescaler         = 0;
-  htim2.Init.ClockDivision     = 0;
-  htim2.Init.CounterMode       = TIM_COUNTERMODE_UP;
-  htim2.Init.RepetitionCounter = 0;
+//  htim2.Instance = TIM2;
+//  htim2.Init.Period            = 0XFFFF;
+//  htim2.Init.Prescaler         = 0;
+//  htim2.Init.ClockDivision     = 0;
+//  htim2.Init.CounterMode       = TIM_COUNTERMODE_UP;
+//  htim2.Init.RepetitionCounter = 0;
 
 //  TimHandle2.Instance = TIM2;
-   if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, (uint32_t *)icBuffer1, 4) != HAL_OK)
+   if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, (uint32_t *)icBuffer1, sizeof(icBuffer1)) != HAL_OK)
    {
      /* Initialization Error */
 	   _Error_Handler(__FILE__, __LINE__);
@@ -156,7 +156,7 @@ int main(void)
 //       Error_Handler();
 //     }
 
-  if(HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t *)icBuffer2, 4) != HAL_OK)
+  if(HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t *)icBuffer2, sizeof(icBuffer2)) != HAL_OK)
   {
 
 	  i = 8;
@@ -243,7 +243,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 0;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 0;
+  htim2.Init.Period = longPeriod;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
   {

@@ -45,6 +45,7 @@
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
+#define longPeriod 0xFFFF
 
 #define test_Pin GPIO_PIN_2
 #define test_GPIO_Port GPIOA

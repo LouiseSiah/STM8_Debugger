@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/Users/user2/Desktop/STM8_Debugger/Experiment_projects_Agile/DMA_IC/TIM1ch1DMAocTog_TIM3ch1DMAic/Inc
+HeaderPath=C:/Users/user2/Desktop/STM8_Debugger/Experiment_projects_Agile/DMA_IC/TIM3ch1DMAocTog_TIM2ch1ch2DMAic/Inc
 HeaderFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;
-SourcePath=C:/Users/user2/Desktop/STM8_Debugger/Experiment_projects_Agile/DMA_IC/TIM1ch1DMAocTog_TIM3ch1DMAic/Src
+SourcePath=C:/Users/user2/Desktop/STM8_Debugger/Experiment_projects_Agile/DMA_IC/TIM3ch1DMAocTog_TIM2ch1ch2DMAic/Src
 SourceFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;stm32f1xx_it.c;stm32f1xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

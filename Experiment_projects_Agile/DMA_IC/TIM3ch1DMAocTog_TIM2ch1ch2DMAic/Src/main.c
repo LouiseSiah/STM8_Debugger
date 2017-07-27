@@ -61,7 +61,7 @@ TIM_OC_InitTypeDef sConfig;
 TIM_IC_InitTypeDef sICConfig;
 
 /* Capture Compare buffer */
-uint32_t aCCValue_Buffer[2] = { 0, 0};//, 0 };
+uint32_t aCCValue_Buffer[1] = { 0};//, 0};//, 0 };
 uint32_t icBuffer1[4] = {0, 0, 0, 0};
 uint32_t icBuffer2[4] = {0, 0, 0, 0};
 
@@ -123,195 +123,144 @@ int main(void)
   MX_TIM3_Init();
 
   /* USER CODE BEGIN 2 */
-  	uhTimerPeriod = (uint32_t) ((SystemCoreClock / 360000) - 1);
+  	uhTimerPeriod = (uint32_t) ((SystemCoreClock / 10000) - 1);
   	//minumum pulse to put is 12??
-  	aCCValue_Buffer[0] =  14;//2;//8999;
-//  			(uint32_t) (((uint32_t) 20 * (uhTimerPeriod - 1)) / 100);
-  	aCCValue_Buffer[1] = //(uint32_t) ((SystemCoreClock / 4000000) - 1 + aCCValue_Buffer[0]);
-  			(uint32_t) (((uint32_t) 30 * (uhTimerPeriod - 1)) / 100);
+  	aCCValue_Buffer[0] =  //14;//2;//8999;
+  			(uint32_t) (((uint32_t) 25 * (uhTimerPeriod - 1)) / 100);
+//  	aCCValue_Buffer[1] = //(uint32_t) ((SystemCoreClock / 4000000) - 1 + aCCValue_Buffer[0]);
+//  			(uint32_t) (((uint32_t) 50 * (uhTimerPeriod - 1)) / 100);
 //  	aCCValue_Buffer[2] = //(uint32_t) ((SystemCoreClock / 400000) - 1 + aCCValue_Buffer[1]);
 //  			(uint32_t) (((uint32_t) 75 * (uhTimerPeriod - 1)) / 100);
 //  	aCCValue_Buffer[3] = //17998;
 //  				(uint32_t) (((uint32_t) 95 * (uhTimerPeriod - 1)) / 100);
 
-  	TimHandle3.Instance = TIM3;
+//  	htim3.Instance = TIM3;
+////  	TIM3->CNT = 0;
+//  	htim3.Init.Period = uhTimerPeriod;
+//  	htim3.Init.RepetitionCounter = 0;
+//  	htim3.Init.Prescaler = 0;
+//  	htim3.Init.ClockDivision = 0;
+//  	htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+//  	if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
+//  	{
+//  		/* Initialization Error */
+//  		Error_Handler();
+//  	}
+//
+//  	sConfig.OCMode = TIM_OCMODE_TOGGLE;
+//  	sConfig.OCPolarity = TIM_OCPOLARITY_HIGH;
+//  	sConfig.Pulse = 0; //aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
+//  	if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
+//  	{
+//  		Error_Handler();
+//  	}
+//
+//  	if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, aCCValue_Buffer, 3) != HAL_OK)
+//  	{
+//  		Error_Handler();
+//  	}
+
+//  	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
+
+//  	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET);
+
+//
+//  	htim2.Instance = TIM2;
+//  	htim2.Init.Period            = 0xFFFFFFFF;
+//  	htim2.Init.Prescaler         = 0;
+//  	htim2.Init.ClockDivision     = 0;
+//  	htim2.Init.CounterMode       = TIM_COUNTERMODE_UP;
+//  	htim2.Init.RepetitionCounter = 0;
+//
+//    if(HAL_TIM_IC_Init(&htim2) != HAL_OK)
+//    {
+//      Error_Handler();
+//    }
+////    HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET); //worked
+//
+//
+//
+//    /* Configure the Input Capture of channel 2 */
+//    sICConfig.ICPolarity  = TIM_ICPOLARITY_FALLING;
+//    sICConfig.ICSelection = TIM_ICSELECTION_DIRECTTI;
+//    sICConfig.ICPrescaler = TIM_ICPSC_DIV1;
+//    sICConfig.ICFilter    = 0;
+
+//    if(HAL_TIM_IC_ConfigChannel(&htim2, &sICConfig, TIM_CHANNEL_1) != HAL_OK)
+//    {
+//      /* Configuration Error */
+//      Error_Handler();
+//    }
+
+//    HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET); //check here, ok
+//
+//	sICConfig.ICPolarity = TIM_ICPOLARITY_RISING;
+//	sICConfig.ICSelection = TIM_ICSELECTION_INDIRECTTI;
+//	sICConfig.ICPrescaler = TIM_ICPSC_DIV1;
+//	sICConfig.ICFilter = 0;
+//	if (HAL_TIM_IC_ConfigChannel(&htim2, &sICConfig, TIM_CHANNEL_2) != HAL_OK)
+//	{
+//		Error_Handler();
+//	}
+//	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET); //check here, ok
+
+//    if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t *)icBuffer1, 4) != HAL_OK)
+//    {
+//    	Error_Handler();
+//    }
+//    HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET); //check here, ok
+//    HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET); //check here, ok
+
+
+//    sICConfig.ICPolarity  = TIM_ICPOLARITY_RISING;
+//    if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, (uint32_t *)icBuffer2, 4) != HAL_OK)
+//    {
+//         // Initialization Error - FAILS HERE DUE TO TIM2 HANDLE BEING BUSY
+//    	Error_Handler();
+//    }
+
+
+  	htim3.Instance = TIM3;
 //  	TIM3->CNT = 0;
-  	TimHandle3.Init.Period = uhTimerPeriod;
-  	TimHandle3.Init.RepetitionCounter = 0;
-  	TimHandle3.Init.Prescaler = 0;
-  	TimHandle3.Init.ClockDivision = 0;
-  	TimHandle3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  	if (HAL_TIM_OC_Init(&TimHandle3) != HAL_OK) {
+  	htim3.Init.Period = uhTimerPeriod;
+  	htim3.Init.RepetitionCounter = 0;
+  	htim3.Init.Prescaler = 0;
+  	htim3.Init.ClockDivision = 0;
+  	htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  	if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
+  	{
   		/* Initialization Error */
   		Error_Handler();
   	}
-  	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET);
-
-  	/********************************  Configure '1'/HIGH at first  ************************************************************/
-	__HAL_TIM_CLEAR_FLAG(&TimHandle3, TIM_FLAG_UPDATE);
-  	sConfig.OCMode = TIM_OCMODE_FORCED_ACTIVE;
-  	sConfig.OCPolarity = TIM_OCPOLARITY_HIGH;//TIM_OCPOLARITY_HIGH;
-//  	sConfig.Pulse = uhTimerPeriod;
-
-	if (HAL_TIM_OC_ConfigChannel(&TimHandle3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
-  	{
-  		Error_Handler();
-  	}
-
-  	if (HAL_TIM_OC_Start(&TimHandle3, TIM_CHANNEL_1))//, TIM_CHANNEL_1, aCCValue_Buffer, 4) != HAL_OK)
-  	{
-  		Error_Handler();
-  	}
-
-//  	while(__HAL_TIM_GET_FLAG(&TimHandle3, TIM_FLAG_CC1) != SET);
-  	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
-
-//  	sConfig.OCMode = TIM_OCMODE_FORCED_INACTIVE;
-////  	sConfig.OCPolarity = TIM_OCPOLARITY_HIGH;//TIM_OCPOLARITY_HIGH;
-////  	sConfig.Pulse = uhTimerPeriod;
-//
-//	if (HAL_TIM_OC_ConfigChannel(&TimHandle3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
-//  	{
-//  		Error_Handler();
-//  	}
-//
-//  	if (HAL_TIM_OC_Start(&TimHandle3, TIM_CHANNEL_1))//, TIM_CHANNEL_1, aCCValue_Buffer, 4) != HAL_OK)
-//  	{
-//  		Error_Handler();
-//  	}
-//
-////  	while(__HAL_TIM_GET_FLAG(&TimHandle3, TIM_FLAG_CC1) != SET);
-//  	HAL_GPIO_WritePin(test_Port, test_Pin, GPIO_PIN_RESET);
-
-
 
   	sConfig.OCMode = TIM_OCMODE_TOGGLE;
-  	sConfig.OCPolarity = TIM_OCPOLARITY_HIGH;
+  	sConfig.OCPolarity = TIM_OCPOLARITY_LOW;
   	sConfig.Pulse = 0; //aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
-  	if (HAL_TIM_OC_ConfigChannel(&TimHandle3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
+  	if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
+  	{
+  		Error_Handler();
+  	}
+ 	if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, aCCValue_Buffer, 2) != HAL_OK)
   	{
   		Error_Handler();
   	}
 
-//  	if (HAL_TIM_OC_Start_DMA(&TimHandle3, TIM_CHANNEL_1, aCCValue_Buffer, 3) != HAL_OK)
-//  	{
-//  		Error_Handler();
-//  	}
 
-  	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET);
-  	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET); //worked
 
-  	TimHandle2.Instance = TIM2;
-  	TimHandle2.Init.Period            = 0xFFFFFFFF;
-	TimHandle2.Init.Prescaler         = 0;
-	TimHandle2.Init.ClockDivision     = 0;
-	TimHandle2.Init.CounterMode       = TIM_COUNTERMODE_UP;
-	TimHandle2.Init.RepetitionCounter = 0;
-
-    if(HAL_TIM_IC_Init(&TimHandle2) != HAL_OK)
-    {
-      /* Initialization Error */
-      Error_Handler();
-    }
-    HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET); //check here, ok
-
-    /* Configure the Input Capture of channel 2 */
-    sICConfig.ICPolarity  = TIM_ICPOLARITY_FALLING;
-    sICConfig.ICSelection = TIM_ICSELECTION_DIRECTTI;
-    sICConfig.ICPrescaler = TIM_ICPSC_DIV1;
-    sICConfig.ICFilter    = 0;
-
-    if(HAL_TIM_IC_ConfigChannel(&TimHandle2, &sICConfig, TIM_CHANNEL_1) != HAL_OK)
-    {
-      /* Configuration Error */
-      Error_Handler();
-    }
-
-/*********** check here. cannot work here!!!! only work after OC-> normal, X circular *************/
-
-	sICConfig.ICPolarity = TIM_ICPOLARITY_RISING;
-	sICConfig.ICSelection = TIM_ICSELECTION_INDIRECTTI;
-	sICConfig.ICPrescaler = TIM_ICPSC_DIV1;
-	sICConfig.ICFilter = 0;
-	if (HAL_TIM_IC_ConfigChannel(&TimHandle2, &sICConfig, TIM_CHANNEL_2) != HAL_OK)
+	if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, (uint32_t *)icBuffer2, 4) != HAL_OK)
 	{
-		/* Configuration Error */
+		 // Initialization Error - FAILS HERE DUE TO TIM2 HANDLE BEING BUSY
 		Error_Handler();
 	}
 
 
-
-    if (HAL_TIM_IC_Start_DMA(&TimHandle2, TIM_CHANNEL_1, (uint32_t *)icBuffer1, 4) != HAL_OK)
-    {
-    	Error_Handler();
-    }
-
-//    assert_param(IS_TIM_CCX_INSTANCE(TimHandle2.Instance, TIM_CHANNEL_1));
-//    assert_param(IS_TIM_DMA_CC_INSTANCE(TimHandle2.Instance));
-//
-//    if((TimHandle2.State == HAL_TIM_STATE_BUSY))
-//    {
-//       return HAL_BUSY;
-//    }
-//    else if((TimHandle2.State == HAL_TIM_STATE_READY))
-//    {
-//      if((icBuffer2 == 0 ) && (5 > 0))
-//      {
-//        return HAL_ERROR;
-//      }
-//      else
-//      {
-//    	  TimHandle2.State = HAL_TIM_STATE_BUSY;
-//      }
-//    }
-//
-//
-//    /* Set the DMA Period elapsed callback */
-//    TimHandle2.hdma[TIM_DMA_ID_CC1]->XferCpltCallback = TIM_DMACaptureCplt;
-//
-//	  /* Set the DMA error callback */
-////    TimHandle2.hdma[TIM_DMA_ID_CC1]->XferErrorCallback = TIM_DMAError;
-//
-//	  /* Enable the DMA channel */
-//	  HAL_DMA_Start_IT(TimHandle2.hdma[TIM_DMA_ID_CC1], (uint32_t)&(TimHandle2.Instance->CCR1), (uint32_t)icBuffer2, 5);
-//
-//	  /* Enable the TIM Capture/Compare 1 DMA request */
-//	  __HAL_TIM_ENABLE_DMA(&TimHandle2, TIM_DMA_CC1);
-//
-//	  /* Enable the Input Capture channel */
-//	  TIM_CCxChannelCmd(TimHandle2.Instance, TIM_CHANNEL_1, TIM_CCx_ENABLE);
-//
-//	  /* Enable the Peripheral */
-//	  __HAL_TIM_ENABLE(&TimHandle2);
-
-	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET); //check here. cannot work here!!!!
-	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
+//	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
+//    HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET); //check here. cannot work here!!!!
+//	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
+//	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET);
+//	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
 
 
-    sICConfig.ICPolarity  = TIM_ICPOLARITY_RISING;
-    if (HAL_TIM_IC_Start_DMA(&TimHandle2, TIM_CHANNEL_2, icBuffer2, 4) != HAL_OK)
-    {
-         // Initialization Error - FAILS HERE DUE TO TIM2 HANDLE BEING BUSY
-    	Error_Handler();
-    }
-
-
-
-
-
-
-
-//    HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
-//    HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET);
-//    HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
-
-	if (HAL_TIM_OC_Start_DMA(&TimHandle3, TIM_CHANNEL_1, aCCValue_Buffer, 3) != HAL_OK)
-	  	{
-	  		Error_Handler();
-	  	}
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -323,17 +272,20 @@ int main(void)
   /* USER CODE BEGIN 3 */
 
 
-//	  if (icBuffer1[0] != 0)
-//	  {
-//
-//		  HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
-//	  	  c--;
-//	  }
-//	  else
-//	  {
-//
+	  if (icBuffer1[0] != 0 || icBuffer2[0] != 0)
+	  {
+
 //		  HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET);
-//	  }
+//		  HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
+//		  HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET);
+	  	  c = 0;
+	  }
+	  else
+	  {
+
+//		  HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET);
+		  c = -1;
+	  }
 //					= {0, 0, 0, 0};
 //	  uint32_t icBuffer2[4] = {0, 0, 0, 0};
 
@@ -405,7 +357,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 0;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 0;
+  htim2.Init.Period = longPeriod;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
   {
@@ -477,7 +429,7 @@ static void MX_TIM3_Init(void)
 
   sConfigOC.OCMode = TIM_OCMODE_TOGGLE;
   sConfigOC.Pulse = 0;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_LOW;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
   {
@@ -537,7 +489,10 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+{
+	c = icBuffer2[0] + 1;
+}
 /* USER CODE END 4 */
 
 /**
