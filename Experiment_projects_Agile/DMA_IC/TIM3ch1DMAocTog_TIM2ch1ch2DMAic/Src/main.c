@@ -219,7 +219,7 @@ int main(void)
   	aCCValue_Buffer[2] = PERIOD_ZERO;//18 + aCCValue_Buffer[1];//(uint32_t) ((SystemCoreClock / 400000) - 1 + aCCValue_Buffer[1]);
   	aCCValue_Buffer[3] = BIT_PERIOD;//18 + aCCValue_Buffer[2];//17998;
   	aCCValue_Buffer[4] = PERIOD_ZERO;//18 + aCCValue_Buffer[1];//(uint32_t) ((SystemCoreClock / 400000) - 1 + aCCValue_Buffer[1]);
-  	aCCValue_Buffer[5] = BIT_PERIOD;//18 + aCCValue_Buffer[2];//17998;
+  	aCCValue_Buffer[5] = BIT_PERIOD+1;//18 + aCCValue_Buffer[2];//17998;
 
   	htim3.Instance = TIM3;
   	htim3.Init.Period = uhTimerPeriod;// 14;
