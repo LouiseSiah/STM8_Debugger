@@ -61,9 +61,9 @@ TIM_OC_InitTypeDef sConfig;
 TIM_IC_InitTypeDef sICConfig;
 
 /* Capture Compare buffer */
-uint32_t aCCValue_Buffer[1] = { 0};//, 0};//, 0 };
+uint32_t aCCValue_Buffer[6] = { 0, 0, 0, 0, 0, 0};//, 0 };
 uint32_t icBuffer1[4] = {0, 0, 0, 0};
-uint32_t icBuffer2[4] = {0, 0, 0, 0};
+uint32_t icBuffer2[6] = {0, 0, 0, 0, 0, 0};
 
 /* Timer Period*/
 uint32_t uhTimerPeriod = 0;
@@ -122,17 +122,6 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM3_Init();
 
-  /* USER CODE BEGIN 2 */
-  	uhTimerPeriod = (uint32_t) ((SystemCoreClock / 10000) - 1);
-  	//minumum pulse to put is 12??
-  	aCCValue_Buffer[0] =  //14;//2;//8999;
-  			(uint32_t) (((uint32_t) 25 * (uhTimerPeriod - 1)) / 100);
-//  	aCCValue_Buffer[1] = //(uint32_t) ((SystemCoreClock / 4000000) - 1 + aCCValue_Buffer[0]);
-//  			(uint32_t) (((uint32_t) 50 * (uhTimerPeriod - 1)) / 100);
-//  	aCCValue_Buffer[2] = //(uint32_t) ((SystemCoreClock / 400000) - 1 + aCCValue_Buffer[1]);
-//  			(uint32_t) (((uint32_t) 75 * (uhTimerPeriod - 1)) / 100);
-//  	aCCValue_Buffer[3] = //17998;
-//  				(uint32_t) (((uint32_t) 95 * (uhTimerPeriod - 1)) / 100);
 
 //  	htim3.Instance = TIM3;
 ////  	TIM3->CNT = 0;
@@ -219,46 +208,48 @@ int main(void)
 //    	Error_Handler();
 //    }
 
+#define BIT_PERIOD (uint32_t)((SystemCoreClock / 361809) - 1)
+#define PERIOD_ONE 18 // 72M^-1 * 18 = 0.25us
+#define PERIOD_ZERO 180 // 72M^-1 * 180 = 2.5us
+  /* USER CODE BEGIN 2 */
+  	uhTimerPeriod = (uint32_t) ((SystemCoreClock / 361809) - 1);
+  	//minumum pulse to put is 12??
+  	aCCValue_Buffer[0] =  PERIOD_ONE;//2;//8999;
+  	aCCValue_Buffer[1] = BIT_PERIOD;//+18;//18+14;//18 + aCCValue_Buffer[0]; //(uint32_t) ((SystemCoreClock / 4000000) - 1 + aCCValue_Buffer[0]);
+  	aCCValue_Buffer[2] = PERIOD_ZERO;//18 + aCCValue_Buffer[1];//(uint32_t) ((SystemCoreClock / 400000) - 1 + aCCValue_Buffer[1]);
+  	aCCValue_Buffer[3] = BIT_PERIOD;//18 + aCCValue_Buffer[2];//17998;
+  	aCCValue_Buffer[4] = PERIOD_ZERO;//18 + aCCValue_Buffer[1];//(uint32_t) ((SystemCoreClock / 400000) - 1 + aCCValue_Buffer[1]);
+  	aCCValue_Buffer[5] = BIT_PERIOD;//18 + aCCValue_Buffer[2];//17998;
 
   	htim3.Instance = TIM3;
-//  	TIM3->CNT = 0;
-  	htim3.Init.Period = uhTimerPeriod;
+  	htim3.Init.Period = uhTimerPeriod;// 14;
   	htim3.Init.RepetitionCounter = 0;
   	htim3.Init.Prescaler = 0;
   	htim3.Init.ClockDivision = 0;
   	htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   	if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
   	{
-  		/* Initialization Error */
   		Error_Handler();
   	}
 
   	sConfig.OCMode = TIM_OCMODE_TOGGLE;
   	sConfig.OCPolarity = TIM_OCPOLARITY_LOW;
-  	sConfig.Pulse = 0; //aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
+  	sConfig.Pulse = 0;// uhTimerPeriod;// 0; //aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
   	if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
   	{
   		Error_Handler();
   	}
- 	if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, aCCValue_Buffer, 2) != HAL_OK)
-  	{
-  		Error_Handler();
-  	}
 
-
-
-	if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, (uint32_t *)icBuffer2, 4) != HAL_OK)
+  	if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, (uint32_t *)icBuffer2, 6) != HAL_OK)
 	{
 		 // Initialization Error - FAILS HERE DUE TO TIM2 HANDLE BEING BUSY
 		Error_Handler();
 	}
 
-
-//	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
-//    HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET); //check here. cannot work here!!!!
-//	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
-//	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_RESET);
-//	HAL_GPIO_WritePin(test_GPIO_Port, test_Pin, GPIO_PIN_SET);
+ 	if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, aCCValue_Buffer, 6) != HAL_OK)
+  	{
+  		Error_Handler();
+  	}
 
 
   /* USER CODE END 2 */
