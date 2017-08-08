@@ -17,3 +17,4 @@ Experiment_projects_Agile/Timer_InputCapture/TIM1_chn1PWMoutput_TIM3_ch1InputCap
 Experiment_projects_Agile/Timer_InputCapture/DMA_OC_Toggle/TIM1_channel1_DMA_OCtoggle/Debug/*
 Experiment_projects_Agile/DMA_IC/TIM1ch1DMAocTog_TIM3ch1DMAic/Debug/*
 Experiment_projects_Agile/test_powerSTM8_PNP/stm8power/Debug/*
+DebugProject/swimEntrySequence/Debug*
