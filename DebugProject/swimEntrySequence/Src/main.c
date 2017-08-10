@@ -56,14 +56,11 @@ DMA_HandleTypeDef hdma_tim3_ch1_trig;
 TIM_OC_InitTypeDef sConfig;
 TIM_IC_InitTypeDef sICConfig;
 
-//#define period_16us  (uint16_t)(1152)
-//#define period_500us (uint16_t)((SystemCoreClock/(1000 * 2)) - 1)
-//#define period_250us (uint16_t)((SystemCoreClock/(2000 * 2)) - 1)
 
-//uint32_t forcedLow_buffer[18] = {10, period_16us, period_500us, period_500us, period_500us, period_500us, period_500us, period_500us, period_500us, period_500us};
-//uint32_t twoK_buffer[8] = {};//period_250us, period_250us, period_250us, period_250us, period_250us, period_250us, period_250us, period_250us};
-uint32_t forcedLow_buffer[18] = {};
-uint32_t oneK_buffer[8] = {};//{period_500us, period_500us, period_500us, period_500us, period_500us, period_500us, period_500us, period_500us};
+#define sizeBuffer	18
+uint32_t forcedLow_buffer[sizeBuffer] = {};
+uint32_t oneK_buffer[16] = {};//{period_500us, period_500us, period_500us, period_500us, period_500us, period_500us, period_500us, period_500us};
+uint32_t twoK_buffer[8] = {};//period_250us, period_250us, period_250us, period_250us, period_250us, period_250us, period_250us, period_250us};
 uint16_t bufferCount = 0;
 uint16_t testing = 0;
 
@@ -81,45 +78,25 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-
+uint16_t getOCR(uint16_t arr, uint16_t currentOCR, uint16_t period_us);
+void configureAndStart_OC_DMA(uint16_t period,  uint32_t *array,  uint16_t size);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
+#define period_600us (uint16_t)(43200 - 1)
+#define period_500us (uint16_t)((72000000/(1000 * 2)) - 1)
+#define period_250us (uint16_t)((72000000/(2000 * 2)) - 1)
+#define period_16us  (uint16_t)((72000000/62500 ) - 1)
 /* USER CODE END 0 */
 
 int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-  #define period_16us  (uint16_t)(1152)
-  #define period_500us (uint16_t)((SystemCoreClock/(1000 * 2)) - 1)
-  #define period_250us (uint16_t)((SystemCoreClock/(2000 * 2)) - 1)
-  forcedLow_buffer[0] = period_16us;
-  forcedLow_buffer[1] = period_500us;//period_16us;
-//  forcedLow_buffer[2] = period_500us;//period_16us;//period_500us;
-//  forcedLow_buffer[3] = period_500us;//period_16us;//period_500us;
-//  forcedLow_buffer[4] = period_500us;//period_500us;
-//  forcedLow_buffer[5] = period_500us;//period_500us;
-//  forcedLow_buffer[6] = period_500us;
-//  forcedLow_buffer[7] = period_500us;
-//  forcedLow_buffer[8] = period_500us;
-//  forcedLow_buffer[9] = period_500us;
-//  forcedLow_buffer[10] = period_250us;
-//  forcedLow_buffer[11] = period_250us;
-//  forcedLow_buffer[12] = period_250us;
-//  forcedLow_buffer[13] = period_250us;
-//  forcedLow_buffer[14] = period_250us;
-//  forcedLow_buffer[15] = period_250us;
-//  forcedLow_buffer[16] = period_250us;
-//  forcedLow_buffer[17] = period_250us;
+//  #define period_500us (uint16_t)((SystemCoreClock/(1000 * 2)) - 1)
+//  #define period_250us (uint16_t)((SystemCoreClock/(2000 * 2)) - 1)
 
-//  forcedLow_buffer[0] = 10;
-//  forcedLow_buffer[1] = period_16us;
-  oneK_buffer[0] = period_500us;//, period_500us, period_500us, period_500us, period_500us, period_500us, period_500us, period_500us};
-  oneK_buffer[1] = period_500us;
-//  twoK_buffer[0] = period_250us;//, period_250us, period_250us, period_250us, period_250us, period_250us, period_250us, period_250us};
-//  twoK_buffer[1] = period_250us;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -146,46 +123,46 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
-//  HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_SET);
-//  HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_RESET);
 
   HAL_Delay(1);
-//  HAL_GPIO_WritePin(SWIM_RESET_OUT_GPIO_Port, SWIM_RESET_OUT_Pin, GPIO_PIN_RESET);
-//  HAL_GPIO_WritePin(SWIM_RESET_OUT_GPIO_Port, SWIM_RESET_OUT_Pin, GPIO_PIN_SET);
-//  HAL_GPIO_WritePin(SWIM_RESET_OUT_GPIO_Port, SWIM_RESET_OUT_Pin, GPIO_PIN_RESET);
+  forcedLow_buffer[0] = period_16us * 1;
+  for(int i = 1; i < 9; i++)
+  {
+	  forcedLow_buffer[i] =  getOCR(period_600us, forcedLow_buffer[i-1], period_500us);
+  }
+
+  for(int i = 0; i < 8; i++)
+  {
+	  forcedLow_buffer[i+9] =  getOCR(period_600us, forcedLow_buffer[i+9-1], period_250us);
+  }
+
+  forcedLow_buffer[17] = period_600us+1;
+  configureAndStart_OC_DMA(period_600us, forcedLow_buffer,  sizeBuffer);
+//  htim3.Instance = TIM3;
+//  htim3.Init.Period = period_600us;//(period_16us * 16);//period_500us;//0xFFFF;// 14;
+//  htim3.Init.RepetitionCounter = 0;
+//  htim3.Init.Prescaler = 0;
+//  htim3.Init.ClockDivision = 0;
+//  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+//  if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
+//  {
+//	Error_Handler();
+//  }
 //
-//  HAL_GPIO_WritePin(SWIM_RESET_OUT_GPIO_Port, SWIM_RESET_OUT_Pin, GPIO_PIN_SET);
-//  HAL_GPIO_WritePin(SWIM_RESET_OUT_GPIO_Port, SWIM_RESET_OUT_Pin, GPIO_PIN_RESET);
-//  HAL_GPIO_WritePin(SWIM_RESET_OUT_GPIO_Port, SWIM_RESET_OUT_Pin, GPIO_PIN_SET);
-//  HAL_GPIO_WritePin(SWIM_RESET_OUT_GPIO_Port, SWIM_RESET_OUT_Pin, GPIO_PIN_RESET);
-//  HAL_GPIO_WritePin(SWIM_RESET_OUT_GPIO_Port, SWIM_RESET_OUT_Pin, GPIO_PIN_SET);
-
-
-  htim3.Instance = TIM3;
-  htim3.Init.Period = (period_500us + period_16us );//period_500us;//0xFFFF;// 14;
-  htim3.Init.RepetitionCounter = 0;
-  htim3.Init.Prescaler = 0;
-  htim3.Init.ClockDivision = 0;
-  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
-  {
-	Error_Handler();
-  }
-
-  sConfig.OCMode = TIM_OCMODE_TOGGLE;
-  sConfig.OCPolarity = TIM_OCPOLARITY_LOW;
-  sConfig.Pulse = 0;// uhTimerPeriod;// 0; //aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
-  if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
-  {
-	Error_Handler();
-  }
-
-
-
-  if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, forcedLow_buffer, 4) != HAL_OK)
-  {
-	  Error_Handler();
-  }
+//  sConfig.OCMode = TIM_OCMODE_TOGGLE;
+//  sConfig.OCPolarity = TIM_OCPOLARITY_LOW;
+//  sConfig.Pulse = 0;// uhTimerPeriod;// 0; //aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
+//  if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
+//  {
+//	Error_Handler();
+//  }
+//
+//  if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, forcedLow_buffer, sizeBuffer) != HAL_OK)
+//  {
+//	  Error_Handler();
+//  }
 
   HAL_GPIO_WritePin(SWIM_RESET_OUT_GPIO_Port, SWIM_RESET_OUT_Pin, GPIO_PIN_RESET);
 
@@ -413,6 +390,47 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
+uint16_t getOCR(uint16_t arr, uint16_t currentOCR, uint16_t period_us)
+{
+	uint16_t ocr = 0;
+	if((currentOCR + period_us) > arr)
+	{
+		ocr = (currentOCR + period_us) % arr;
+	}
+	else
+	{
+		ocr = currentOCR + period_us;
+	}
+
+	return ocr;
+}
+
+void configureAndStart_OC_DMA(uint16_t period,  uint32_t *array,  uint16_t size)
+{
+	htim3.Instance = TIM3;
+	htim3.Init.Period = period;//(period_16us * 16);//period_500us;//0xFFFF;// 14;
+	htim3.Init.RepetitionCounter = 0;
+	htim3.Init.Prescaler = 0;
+	htim3.Init.ClockDivision = 0;
+	htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+	if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
+	{
+	Error_Handler();
+	}
+
+	sConfig.OCMode = TIM_OCMODE_TOGGLE;
+	sConfig.OCPolarity = TIM_OCPOLARITY_LOW;
+	sConfig.Pulse = 0;// uhTimerPeriod;// 0; //aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
+	if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
+	{
+	Error_Handler();
+	}
+
+	if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, array, size) != HAL_OK)
+	{
+	  Error_Handler();
+	}
+}
 
 //void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 //{
@@ -422,21 +440,62 @@ static void MX_GPIO_Init(void)
 //		bufferCount++;
 //		if(bufferCount == 1)
 //		{
-////			htim3.Instance = TIM3;
-////			htim3.Init.RepetitionCounter = 2;
-////			if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
-////			{
-////			  		Error_Handler();
-////			}
+//			htim3.Instance = TIM3;
+//			htim3.Init.Period = period_500us;// + period_16us );//period_500us;//0xFFFF;// 14;
+//			htim3.Init.RepetitionCounter = 0;
+//			htim3.Init.Prescaler = 0;
+//			htim3.Init.ClockDivision = 0;
+//			htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+//			if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
+//			{
+//				Error_Handler();
+//			}
+//			for(int i = 0; i < 8; i++)
+//			{
+//				oneK_buffer[i] = period_500us;
+//			}
 //
-////			if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, oneK_buffer, 2) != HAL_OK)
-////			{
-////				Error_Handler();
-////			}
+//			for(int i = 0; i < 4; i++)
+//			{
+//				oneK_buffer[i*2+8] = period_500us;
+//				oneK_buffer[i*2+9] = period_250us;
+//			}
+////			oneK_buffer[0] = period_500us;
+////			oneK_buffer[1] = period_500us;
+////			oneK_buffer[2] = period_500us;
+////			oneK_buffer[3] = period_500us;
+////			oneK_buffer[4] = period_500us;
+////			oneK_buffer[5] = period_500us;
+////			oneK_buffer[6] = period_500us;
+////			oneK_buffer[7] = period_500us;
+//
+//		  sConfig.OCMode = TIM_OCMODE_TOGGLE;
+//		  sConfig.OCPolarity = TIM_OCPOLARITY_HIGH;
+//		  sConfig.Pulse = 0;// uhTimerPeriod;// 0; //aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
+//		  if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
+//		  {
+//			Error_Handler();
+//		  }
+//
+//
+//		  if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, oneK_buffer, 16) != HAL_OK)
+//		  {
+//			  Error_Handler();
+//		  }
+//
+//
+//
 //		}
+//		else if(bufferCount == 2)
+//		{
 //
-////		__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_1, forcedLow_buffer[bufferCount]);
 //
+//		}
+//		else if(bufferCount == 3)
+//		{
+//
+//
+//		}
 //
 //	}
 //}

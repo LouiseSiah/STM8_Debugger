@@ -222,7 +222,7 @@ int main(void)
   	aCCValue_Buffer[5] = BIT_PERIOD+1;//18 + aCCValue_Buffer[2];//17998;
 
   	htim3.Instance = TIM3;
-  	htim3.Init.Period = uhTimerPeriod;// 14;
+  	htim3.Init.Period = BIT_PERIOD;// 14;
   	htim3.Init.RepetitionCounter = 0;
   	htim3.Init.Prescaler = 0;
   	htim3.Init.ClockDivision = 0;

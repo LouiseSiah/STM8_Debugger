@@ -115,11 +115,11 @@ int main(void)
   /* Compute the value of ARR regiter to generate signal frequency at 17.57 Khz */
     uhTimerPeriod = (uint32_t) ((SystemCoreClock / 10000 ) - 1);
     /* Compute CCR1 value to generate a duty cycle at 75% */
-    aCCValue_Buffer[0] = (uint32_t)(((uint32_t) 25 * (uhTimerPeriod - 1)) / 100);
+    aCCValue_Buffer[0] = (uint32_t)(((uint32_t) 10 * (uhTimerPeriod - 1)) / 100);
     /* Compute CCR2 value to generate a duty cycle at 50% */
-    aCCValue_Buffer[1] = (uint32_t)(((uint32_t) 75 * (uhTimerPeriod - 1)) / 100);
+    aCCValue_Buffer[1] = (uint32_t)(((uint32_t) 50 * (uhTimerPeriod - 1)) / 100);
     /* Compute CCR3 value to generate a duty cycle at 25% */
-    aCCValue_Buffer[2] = (uint32_t)(((uint32_t) 25 * (uhTimerPeriod - 1)) / 100);
+    aCCValue_Buffer[2] = (uint32_t)(((uint32_t) 75 * (uhTimerPeriod - 1)) / 100);
 
 
     /*##-1- Configure the TIM peripheral #######################################*/
