@@ -44,6 +44,7 @@
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 DMA_HandleTypeDef hdma_tim2_ch1;
@@ -57,10 +58,11 @@ TIM_OC_InitTypeDef sConfig;
 TIM_IC_InitTypeDef sICConfig;
 
 
-#define sizeBuffer	18
-uint32_t forcedLow_buffer[sizeBuffer] = {};
-uint32_t oneK_buffer[16] = {};//{period_500us, period_500us, period_500us, period_500us, period_500us, period_500us, period_500us, period_500us};
-uint32_t twoK_buffer[8] = {};//period_250us, period_250us, period_250us, period_250us, period_250us, period_250us, period_250us, period_250us};
+#define OC_bufferSize	18
+#define IC_bufferSize 	10
+uint32_t forcedLow_buffer[OC_bufferSize] = {};
+uint32_t icBuffer[IC_bufferSize] = {};
+uint32_t icBuffer2[IC_bufferSize] = {};
 uint16_t bufferCount = 0;
 uint16_t testing = 0;
 
@@ -72,7 +74,8 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM3_Init(void);
-                                    
+static void MX_TIM1_Init(void);
+
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
                                 
 
@@ -120,6 +123,7 @@ int main(void)
   MX_DMA_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
+  MX_TIM1_Init();
 
   /* USER CODE BEGIN 2 */
 
@@ -139,30 +143,21 @@ int main(void)
   }
 
   forcedLow_buffer[17] = period_600us+1;
-  configureAndStart_OC_DMA(period_600us, forcedLow_buffer,  sizeBuffer);
-//  htim3.Instance = TIM3;
-//  htim3.Init.Period = period_600us;//(period_16us * 16);//period_500us;//0xFFFF;// 14;
-//  htim3.Init.RepetitionCounter = 0;
-//  htim3.Init.Prescaler = 0;
-//  htim3.Init.ClockDivision = 0;
-//  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-//  if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
-//  {
-//	Error_Handler();
-//  }
-//
-//  sConfig.OCMode = TIM_OCMODE_TOGGLE;
-//  sConfig.OCPolarity = TIM_OCPOLARITY_LOW;
-//  sConfig.Pulse = 0;// uhTimerPeriod;// 0; //aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
-//  if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
-//  {
-//	Error_Handler();
-//  }
-//
-//  if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, forcedLow_buffer, sizeBuffer) != HAL_OK)
+  configureAndStart_OC_DMA(period_600us, forcedLow_buffer,  OC_bufferSize);
+  if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, icBuffer, IC_bufferSize) != HAL_OK)
+  {
+	Error_Handler();
+  }
+//  if (HAL_TIM_Base_Start(&htim1) != HAL_OK)
 //  {
 //	  Error_Handler();
 //  }
+//
+//  if (HAL_TIM_Base_Start_IT(&htim1) != HAL_OK)
+//  {
+//	  Error_Handler();
+//  }
+
 
   HAL_GPIO_WritePin(SWIM_RESET_OUT_GPIO_Port, SWIM_RESET_OUT_Pin, GPIO_PIN_RESET);
 
@@ -228,6 +223,58 @@ void SystemClock_Config(void)
 
   /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+}
+
+/* TIM1 init function */
+static void MX_TIM1_Init(void)
+{
+
+  TIM_MasterConfigTypeDef sMasterConfig;
+  TIM_OC_InitTypeDef sConfigOC;
+  TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
+
+  htim1.Instance = TIM1;
+  htim1.Init.Prescaler = 10;
+  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim1.Init.Period = 65000-1;
+  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim1.Init.RepetitionCounter = 0;
+  if (HAL_TIM_OC_Init(&htim1) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  sConfigOC.OCMode = TIM_OCMODE_TIMING;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
+  sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
+  if (HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
+  sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
+  sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
+  sBreakDeadTimeConfig.DeadTime = 0;
+  sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;
+  sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
+  sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
+  if (HAL_TIMEx_ConfigBreakDeadTime(&htim1, &sBreakDeadTimeConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
 }
 
 /* TIM2 init function */
@@ -432,6 +479,45 @@ void configureAndStart_OC_DMA(uint16_t period,  uint32_t *array,  uint16_t size)
 	}
 }
 
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+{
+	if(htim->Instance == TIM2 && htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
+	{
+		bufferCount++;
+		if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, icBuffer2, IC_bufferSize) != HAL_OK)
+		{
+			Error_Handler();
+		}
+//		if (HAL_TIM_Base_Stop(&htim1) != HAL_OK)
+//		  {
+//			  Error_Handler();
+//		  }
+//
+//		  if (HAL_TIM_Base_Stop_IT(&htim1) != HAL_OK)
+//		  {
+//			  Error_Handler();
+//		  }
+	}
+	else if(htim->Instance == TIM2 && htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)
+	{
+		bufferCount--;
+	}
+}
+
+/*
+ *  didnt be called after OC complete sending.
+ */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	if (htim->Instance == TIM1)
+	{
+//		bufferCount = 1000;
+		if (HAL_TIM_OC_Stop_DMA(&htim3, TIM_CHANNEL_1) != HAL_OK)
+			{
+			  Error_Handler();
+			}
+	}
+}
 //void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 //{
 //	/* TIM3_CH1 toggling with frequency = 256.35 Hz */
