@@ -83,6 +83,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 /* Private function prototypes -----------------------------------------------*/
 uint16_t getOCR(uint16_t arr, uint16_t currentOCR, uint16_t period_us);
 void configureAndStart_OC_DMA(uint16_t period,  uint32_t *array,  uint16_t size);
+void setTimeout(uint16_t period_us);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -128,6 +129,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_SET);
+  HAL_Delay(10);
   HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_RESET);
 
   HAL_Delay(1);
@@ -143,8 +145,9 @@ int main(void)
   }
 
   forcedLow_buffer[17] = period_600us+1;
+  setTimeout(6670);
   configureAndStart_OC_DMA(period_600us, forcedLow_buffer,  OC_bufferSize);
-  if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, icBuffer, IC_bufferSize) != HAL_OK)
+  if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, icBuffer, IC_bufferSize) != HAL_OK)
   {
 	Error_Handler();
   }
@@ -229,17 +232,22 @@ void SystemClock_Config(void)
 static void MX_TIM1_Init(void)
 {
 
+  TIM_ClockConfigTypeDef sClockSourceConfig;
   TIM_MasterConfigTypeDef sMasterConfig;
-  TIM_OC_InitTypeDef sConfigOC;
-  TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
 
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 10;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 65000-1;
+  htim1.Init.Period = timeUp_period;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
-  if (HAL_TIM_OC_Init(&htim1) != HAL_OK)
+  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -247,30 +255,6 @@ static void MX_TIM1_Init(void)
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
-  sConfigOC.OCMode = TIM_OCMODE_TIMING;
-  sConfigOC.Pulse = 0;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
-  sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-  if (HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
-  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
-  sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
-  sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
-  sBreakDeadTimeConfig.DeadTime = 0;
-  sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;
-  sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
-  sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
-  if (HAL_TIMEx_ConfigBreakDeadTime(&htim1, &sBreakDeadTimeConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -481,13 +465,21 @@ void configureAndStart_OC_DMA(uint16_t period,  uint32_t *array,  uint16_t size)
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
-	if(htim->Instance == TIM2 && htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
+	if(htim->Instance == TIM2 && htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)
 	{
+
 		bufferCount++;
-		if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, icBuffer2, IC_bufferSize) != HAL_OK)
+		HAL_TIM_Base_Stop_IT(&htim1);
+		if(icBuffer[9] >= 1130)
 		{
-			Error_Handler();
+			//pass;
 		}
+
+
+//		if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, icBuffer2, IC_bufferSize) != HAL_OK)
+//		{
+//			Error_Handler();
+//		}
 //		if (HAL_TIM_Base_Stop(&htim1) != HAL_OK)
 //		  {
 //			  Error_Handler();
@@ -498,7 +490,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 //			  Error_Handler();
 //		  }
 	}
-	else if(htim->Instance == TIM2 && htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)
+	else if(htim->Instance == TIM2 && htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
 	{
 		bufferCount--;
 	}
@@ -511,12 +503,42 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if (htim->Instance == TIM1)
 	{
-//		bufferCount = 1000;
-		if (HAL_TIM_OC_Stop_DMA(&htim3, TIM_CHANNEL_1) != HAL_OK)
-			{
-			  Error_Handler();
-			}
+		bufferCount = 1000;
+//		if (HAL_TIM_OC_Stop_DMA(&htim3, TIM_CHANNEL_1) != HAL_OK)
+//		{
+//		  Error_Handler();
+//		}
 	}
+}
+
+/*
+ * period_us : minimum = 16us
+ *
+ */
+void setTimeout(uint16_t period_us)
+{
+	uint32_t frequency = (uint32_t)1000000 / period_us;
+	uint32_t prescalerValue = (uint16_t)(SystemCoreClock / (frequency * 65536));
+    uint32_t timerPeriod = (uint16_t) (SystemCoreClock / (frequency * (prescalerValue + 1))) - 1;
+    HAL_TIM_Base_Stop_IT(&htim1);
+	__HAL_TIM_CLEAR_FLAG(&htim1, TIM_FLAG_UPDATE);
+	__HAL_TIM_SET_COUNTER(&htim1, 0);
+//	htim1.Instance = TIM1;
+//	  htim1.Init.Prescaler = prescalerValue;
+//	  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+//	  htim1.Init.Period = timerPeriod;
+//	  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+//	  htim1.Init.RepetitionCounter = 0;
+//	  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
+//	  {
+//	    _Error_Handler(__FILE__, __LINE__);
+//	  }
+	/* Set the Autoreload value */
+	TIM1->ARR = (uint32_t)timerPeriod;
+
+	  /* Set the Prescaler value */
+	TIM1->PSC = (uint32_t)prescalerValue;
+	HAL_TIM_Base_Start_IT(&htim1);
 }
 //void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 //{

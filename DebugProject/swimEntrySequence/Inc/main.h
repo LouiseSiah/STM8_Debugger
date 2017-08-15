@@ -46,7 +46,7 @@
 
 /* Private define ------------------------------------------------------------*/
 #define longPeriod 0xFFFF
-#define timeUp_period 65535-1
+#define timeUp_period 65000-1
 
 #define STM8_POWER_Pin GPIO_PIN_2
 #define STM8_POWER_GPIO_Port GPIOA

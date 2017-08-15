@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/Users/user2/Desktop/STM8_Debugger/DebugProject/swimEntrySequence/Inc
+HeaderPath=C:/Users/user2/Desktop/new/STM8_Debugger/DebugProject/swimEntrySequence/Inc
 HeaderFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;
-SourcePath=C:/Users/user2/Desktop/STM8_Debugger/DebugProject/swimEntrySequence/Src
+SourcePath=C:/Users/user2/Desktop/new/STM8_Debugger/DebugProject/swimEntrySequence/Src
 SourceFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;stm32f1xx_it.c;stm32f1xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]
