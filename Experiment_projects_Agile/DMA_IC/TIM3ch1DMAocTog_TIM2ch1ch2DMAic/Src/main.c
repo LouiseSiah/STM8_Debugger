@@ -61,7 +61,7 @@ TIM_OC_InitTypeDef sConfig;
 TIM_IC_InitTypeDef sICConfig;
 
 /* Capture Compare buffer */
-uint32_t aCCValue_Buffer[6] = { 0, 0, 0, 0, 0, 0};//, 0 };
+uint32_t aCCValue_Buffer[8] = {};// 0, 0, 0, 0, 0, 0};//, 0 };
 uint32_t icBuffer1[4] = {0, 0, 0, 0};
 uint32_t icBuffer2[6] = {0, 0, 0, 0, 0, 0};
 
@@ -218,8 +218,10 @@ int main(void)
   	aCCValue_Buffer[1] = BIT_PERIOD;//+18;//18+14;//18 + aCCValue_Buffer[0]; //(uint32_t) ((SystemCoreClock / 4000000) - 1 + aCCValue_Buffer[0]);
   	aCCValue_Buffer[2] = PERIOD_ZERO;//18 + aCCValue_Buffer[1];//(uint32_t) ((SystemCoreClock / 400000) - 1 + aCCValue_Buffer[1]);
   	aCCValue_Buffer[3] = BIT_PERIOD;//18 + aCCValue_Buffer[2];//17998;
-  	aCCValue_Buffer[4] = PERIOD_ZERO;//18 + aCCValue_Buffer[1];//(uint32_t) ((SystemCoreClock / 400000) - 1 + aCCValue_Buffer[1]);
-  	aCCValue_Buffer[5] = BIT_PERIOD+1;//18 + aCCValue_Buffer[2];//17998;
+  	aCCValue_Buffer[4] = PERIOD_ZERO;
+  	aCCValue_Buffer[5] = BIT_PERIOD;
+  	aCCValue_Buffer[6] = PERIOD_ONE;
+	aCCValue_Buffer[7] = BIT_PERIOD+1;
 
   	htim3.Instance = TIM3;
   	htim3.Init.Period = BIT_PERIOD;// 14;

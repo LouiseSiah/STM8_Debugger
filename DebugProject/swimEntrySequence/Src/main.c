@@ -60,9 +60,8 @@ TIM_IC_InitTypeDef sICConfig;
 
 #define OC_bufferSize	18
 #define IC_bufferSize 	10
-uint32_t forcedLow_buffer[OC_bufferSize] = {};
+uint32_t forcedLow_buffer[OC_bufferSize] = {0,0,0,0};
 uint32_t icBuffer[IC_bufferSize] = {};
-uint32_t icBuffer2[IC_bufferSize] = {};
 uint16_t bufferCount = 0;
 uint16_t testing = 0;
 
@@ -81,8 +80,10 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-uint16_t getOCR(uint16_t arr, uint16_t currentOCR, uint16_t period_us);
-void configureAndStart_OC_DMA(uint16_t period,  uint32_t *array,  uint16_t size);
+//uint16_t getOCR(uint16_t arr, uint16_t currentOCR, uint16_t period_us);
+void configure_entry_sequence();
+//void configureAndStart_OC_DMA(uint16_t period,  uint32_t *array,  uint16_t size);
+
 void setTimeout(uint16_t period_us);
 /* USER CODE END PFP */
 
@@ -109,7 +110,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  swim.currState = SWIM_DO_NOTHING;
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -129,10 +130,13 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_SET);
-  HAL_Delay(10);
   HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_RESET);
 
+
   HAL_Delay(1);
+//  swim_send_header(SWIM_WOTF);
+
+/*
   forcedLow_buffer[0] = period_16us * 1;
   for(int i = 1; i < 9; i++)
   {
@@ -144,26 +148,19 @@ int main(void)
 	  forcedLow_buffer[i+9] =  getOCR(period_600us, forcedLow_buffer[i+9-1], period_250us);
   }
 
-  forcedLow_buffer[17] = period_600us+1;
+  forcedLow_buffer[17] = period_600us+1; */
+
   setTimeout(6670);
-  configureAndStart_OC_DMA(period_600us, forcedLow_buffer,  OC_bufferSize);
+  configure_entry_sequence();
+  configureAndStart_OC_DMA(period_600us, forcedLow_buffer, OC_bufferSize);
+  swim.currState = SWIM_LISTEN_SYNCHRONIZATION;
+
   if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, icBuffer, IC_bufferSize) != HAL_OK)
   {
 	Error_Handler();
   }
-//  if (HAL_TIM_Base_Start(&htim1) != HAL_OK)
-//  {
-//	  Error_Handler();
-//  }
-//
-//  if (HAL_TIM_Base_Start_IT(&htim1) != HAL_OK)
-//  {
-//	  Error_Handler();
-//  }
-
 
   HAL_GPIO_WritePin(SWIM_RESET_OUT_GPIO_Port, SWIM_RESET_OUT_Pin, GPIO_PIN_RESET);
-
 
   /* USER CODE END 2 */
 
@@ -421,47 +418,48 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
-uint16_t getOCR(uint16_t arr, uint16_t currentOCR, uint16_t period_us)
+void configure_entry_sequence()
 {
-	uint16_t ocr = 0;
-	if((currentOCR + period_us) > arr)
+	forcedLow_buffer[0] = period_16us * 1;
+	for(int i = 1; i < 9; i++)
 	{
-		ocr = (currentOCR + period_us) % arr;
-	}
-	else
-	{
-		ocr = currentOCR + period_us;
+	  forcedLow_buffer[i] =  getOCR(period_600us, forcedLow_buffer[i-1], period_500us);
 	}
 
-	return ocr;
+	for(int i = 0; i < 8; i++)
+	{
+	  forcedLow_buffer[i+9] =  getOCR(period_600us, forcedLow_buffer[i+9-1], period_250us);
+	}
+
+	forcedLow_buffer[17] = period_600us+1;
 }
 
-void configureAndStart_OC_DMA(uint16_t period,  uint32_t *array,  uint16_t size)
-{
-	htim3.Instance = TIM3;
-	htim3.Init.Period = period;//(period_16us * 16);//period_500us;//0xFFFF;// 14;
-	htim3.Init.RepetitionCounter = 0;
-	htim3.Init.Prescaler = 0;
-	htim3.Init.ClockDivision = 0;
-	htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-	if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
-	{
-	Error_Handler();
-	}
-
-	sConfig.OCMode = TIM_OCMODE_TOGGLE;
-	sConfig.OCPolarity = TIM_OCPOLARITY_LOW;
-	sConfig.Pulse = 0;// uhTimerPeriod;// 0; //aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
-	if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
-	{
-	Error_Handler();
-	}
-
-	if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, array, size) != HAL_OK)
-	{
-	  Error_Handler();
-	}
-}
+//void configureAndStart_OC_DMA(uint16_t period,  uint32_t *array,  uint16_t size)
+//{
+//	htim3.Instance = TIM3;
+//	htim3.Init.Period = period;//(period_16us * 16);//period_500us;//0xFFFF;// 14;
+//	htim3.Init.RepetitionCounter = 0;
+//	htim3.Init.Prescaler = 0;
+//	htim3.Init.ClockDivision = 0;
+//	htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+//	if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
+//	{
+//	Error_Handler();
+//	}
+//
+//	sConfig.OCMode = TIM_OCMODE_TOGGLE;
+//	sConfig.OCPolarity = TIM_OCPOLARITY_LOW;
+//	sConfig.Pulse = 0;// uhTimerPeriod;// 0; //aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
+//	if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
+//	{
+//	Error_Handler();
+//	}
+//
+//	if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, array, size) != HAL_OK)
+//	{
+//	  Error_Handler();
+//	}
+//}
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
@@ -470,9 +468,22 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
 		bufferCount++;
 		HAL_TIM_Base_Stop_IT(&htim1);
-		if(icBuffer[9] >= 1130)
+		if( icBuffer[9] >= 1130 && swim.currState == SWIM_LISTEN_SYNCHRONIZATION)
 		{
-			//pass;
+			swim.prevState = SWIM_LISTEN_SYNCHRONIZATION;
+			swim.currState = SWIM_ACTIVATION;
+//			swim_send_Zero();
+			setTimeout(1);
+//			setTimeout(2000);
+//			swim_send_header(SWIM_WOTF);
+//			if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, icBuffer, 6) != HAL_OK)
+//			{
+//				Error_Handler();
+//			}
+		}
+		else if(swim.currState == SWIM_LISTEN_ACK)
+		{
+
 		}
 
 
@@ -503,7 +514,27 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if (htim->Instance == TIM1)
 	{
-		bufferCount = 1000;
+		if(swim.currState == SWIM_LISTEN_SYNCHRONIZATION)
+		{
+			bufferCount = 1000;
+		}
+		else if(swim.currState == SWIM_ACTIVATION)
+		{
+			setTimeout(3000);
+			swim.currState = SWIM_COMMAND_WOTF;
+//			swim_send_Zero();
+			swim_send_header(SWIM_WOTF);
+			if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, icBuffer, 6) != HAL_OK)
+			{
+				Error_Handler();
+			}
+		}
+
+		else if(swim.currState == SWIM_LISTEN_ACK)
+		{
+			bufferCount = 100;
+
+		}
 //		if (HAL_TIM_OC_Stop_DMA(&htim3, TIM_CHANNEL_1) != HAL_OK)
 //		{
 //		  Error_Handler();
@@ -517,22 +548,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  */
 void setTimeout(uint16_t period_us)
 {
+    HAL_TIM_Base_Stop_IT(&htim1);
 	uint32_t frequency = (uint32_t)1000000 / period_us;
 	uint32_t prescalerValue = (uint16_t)(SystemCoreClock / (frequency * 65536));
     uint32_t timerPeriod = (uint16_t) (SystemCoreClock / (frequency * (prescalerValue + 1))) - 1;
-    HAL_TIM_Base_Stop_IT(&htim1);
 	__HAL_TIM_CLEAR_FLAG(&htim1, TIM_FLAG_UPDATE);
 	__HAL_TIM_SET_COUNTER(&htim1, 0);
-//	htim1.Instance = TIM1;
-//	  htim1.Init.Prescaler = prescalerValue;
-//	  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-//	  htim1.Init.Period = timerPeriod;
-//	  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-//	  htim1.Init.RepetitionCounter = 0;
-//	  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
-//	  {
-//	    _Error_Handler(__FILE__, __LINE__);
-//	  }
 	/* Set the Autoreload value */
 	TIM1->ARR = (uint32_t)timerPeriod;
 
@@ -540,72 +561,17 @@ void setTimeout(uint16_t period_us)
 	TIM1->PSC = (uint32_t)prescalerValue;
 	HAL_TIM_Base_Start_IT(&htim1);
 }
+
 //void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 //{
-//	/* TIM3_CH1 toggling with frequency = 256.35 Hz */
-//	if(htim->Instance == TIM3 && htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
-//	{
-//		bufferCount++;
-//		if(bufferCount == 1)
-//		{
-//			htim3.Instance = TIM3;
-//			htim3.Init.Period = period_500us;// + period_16us );//period_500us;//0xFFFF;// 14;
-//			htim3.Init.RepetitionCounter = 0;
-//			htim3.Init.Prescaler = 0;
-//			htim3.Init.ClockDivision = 0;
-//			htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-//			if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
-//			{
-//				Error_Handler();
-//			}
-//			for(int i = 0; i < 8; i++)
-//			{
-//				oneK_buffer[i] = period_500us;
-//			}
+//	bufferCount++;
+//	if(bufferCount == 1)
+//		swim_send_Zero();
+//	else if(bufferCount == 2)
+//		swim_send_Zero();
+//	else
+//		swim_send_header(SWIM_WOTF);
 //
-//			for(int i = 0; i < 4; i++)
-//			{
-//				oneK_buffer[i*2+8] = period_500us;
-//				oneK_buffer[i*2+9] = period_250us;
-//			}
-////			oneK_buffer[0] = period_500us;
-////			oneK_buffer[1] = period_500us;
-////			oneK_buffer[2] = period_500us;
-////			oneK_buffer[3] = period_500us;
-////			oneK_buffer[4] = period_500us;
-////			oneK_buffer[5] = period_500us;
-////			oneK_buffer[6] = period_500us;
-////			oneK_buffer[7] = period_500us;
-//
-//		  sConfig.OCMode = TIM_OCMODE_TOGGLE;
-//		  sConfig.OCPolarity = TIM_OCPOLARITY_HIGH;
-//		  sConfig.Pulse = 0;// uhTimerPeriod;// 0; //aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
-//		  if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
-//		  {
-//			Error_Handler();
-//		  }
-//
-//
-//		  if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, oneK_buffer, 16) != HAL_OK)
-//		  {
-//			  Error_Handler();
-//		  }
-//
-//
-//
-//		}
-//		else if(bufferCount == 2)
-//		{
-//
-//
-//		}
-//		else if(bufferCount == 3)
-//		{
-//
-//
-//		}
-//
-//	}
 //}
 
 /* USER CODE END 4 */
