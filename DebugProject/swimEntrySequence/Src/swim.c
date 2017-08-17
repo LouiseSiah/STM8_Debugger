@@ -11,6 +11,7 @@
 TIM_HandleTypeDef htim3;
 TIM_OC_InitTypeDef sConfig;
 uint32_t header_buffer[10] = {};
+uint16_t count = 0;
 //uint32_t buffer_array[32] = {};
 //void configure_swim_out_array(uint32_t* array, uint8_t numOfBits, uint16_t sequenceInBin)
 //{
@@ -41,20 +42,23 @@ void configureAndStart_OC_DMA(uint16_t period,  uint32_t *array,  uint16_t size)
 	htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
 	if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
 	{
-	Error_Handler();
+		Error_Handler();
 	}
 
 	sConfig.OCMode = TIM_OCMODE_TOGGLE;
-	sConfig.OCPolarity = TIM_OCPOLARITY_LOW;
+	if(count%2 == 1)
+		sConfig.OCPolarity = TIM_OCPOLARITY_LOW;
+	else
+		sConfig.OCPolarity = TIM_OCPOLARITY_HIGH;
 	sConfig.Pulse = 0;// uhTimerPeriod;// 0; //aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
 	if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
 	{
-	Error_Handler();
+		Error_Handler();
 	}
 
 	if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, array, size) != HAL_OK)
 	{
-	  Error_Handler();
+		Error_Handler();
 	}
 }
 
@@ -79,6 +83,7 @@ uint32_t swim_send_header(uint8_t command)
 //		swim.prevState = SWIM_COMMAND_SRST;
 //		swim.prevState = SWIM_COMMAND_ROTF;
 //		swim.prevState = SWIM_COMMAND_WOTF;
+	count++;
 	if(command ==SWIM_SRST)
 	{
 		// 0, b2, b1, b0, pb
@@ -142,6 +147,13 @@ uint32_t swim_send_header(uint8_t command)
 		return SWIM_CMD_UNDEFINED;
 	}
 	header_buffer[9] = LOW_SPEED_BIT_PRIOD + 1 ;
+//	htim3.Instance = TIM3;
+//	__HAL_TIM_DISABLE(&htim3);
+	htim3.Instance->CR1 &= ~(TIM_CR1_CEN);
+	__HAL_TIM_SET_COUNTER(&htim3, 0);
+	__HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_CC1| TIM_FLAG_CC2| TIM_FLAG_CC3| TIM_FLAG_CC4| TIM_FLAG_UPDATE);
+	CLEAR_BIT(TIM3->DIER, TIM_DIER_CC1DE);
+
 	configureAndStart_OC_DMA(LOW_SPEED_BIT_PRIOD, header_buffer, 10);
 	swim.prevState = swim.currState;
 	swim.currState = SWIM_LISTEN_ACK;

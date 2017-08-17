@@ -133,34 +133,36 @@ int main(void)
   HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_RESET);
 
 
-  HAL_Delay(1);
-//  swim_send_header(SWIM_WOTF);
-
-/*
-  forcedLow_buffer[0] = period_16us * 1;
-  for(int i = 1; i < 9; i++)
-  {
-	  forcedLow_buffer[i] =  getOCR(period_600us, forcedLow_buffer[i-1], period_500us);
-  }
-
-  for(int i = 0; i < 8; i++)
-  {
-	  forcedLow_buffer[i+9] =  getOCR(period_600us, forcedLow_buffer[i+9-1], period_250us);
-  }
-
-  forcedLow_buffer[17] = period_600us+1; */
-
-  setTimeout(6670);
-  configure_entry_sequence();
-  configureAndStart_OC_DMA(period_600us, forcedLow_buffer, OC_bufferSize);
-  swim.currState = SWIM_LISTEN_SYNCHRONIZATION;
-
-  if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, icBuffer, IC_bufferSize) != HAL_OK)
-  {
-	Error_Handler();
-  }
-
   HAL_GPIO_WritePin(SWIM_RESET_OUT_GPIO_Port, SWIM_RESET_OUT_Pin, GPIO_PIN_RESET);
+  HAL_Delay(1);
+  swim_send_header(SWIM_WOTF);
+////
+//
+//
+//  forcedLow_buffer[0] = period_16us * 1;
+//  for(int i = 1; i < 9; i++)
+//  {
+//	  forcedLow_buffer[i] =  getOCR(period_600us, forcedLow_buffer[i-1], period_500us);
+//  }
+//
+//  for(int i = 0; i < 8; i++)
+//  {
+//	  forcedLow_buffer[i+9] =  getOCR(period_600us, forcedLow_buffer[i+9-1], period_250us);
+//  }
+//
+//  forcedLow_buffer[17] = period_600us+1;
+
+//  configure_entry_sequence();
+//  configureAndStart_OC_DMA(period_600us, forcedLow_buffer, OC_bufferSize);
+//  setTimeout(6670);
+//  swim.currState = SWIM_LISTEN_SYNCHRONIZATION;
+//
+//  if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, icBuffer, IC_bufferSize) != HAL_OK)
+//  {
+//	Error_Handler();
+//  }
+
+//  HAL_GPIO_WritePin(SWIM_RESET_OUT_GPIO_Port, SWIM_RESET_OUT_Pin, GPIO_PIN_RESET);
 
   /* USER CODE END 2 */
 
@@ -477,7 +479,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 //			setTimeout(2000);
 //			swim_send_header(SWIM_WOTF);
 //			if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, icBuffer, 6) != HAL_OK)
-//			{
+////			{
 //				Error_Handler();
 //			}
 		}
@@ -486,7 +488,8 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
 		}
 
-
+	}
+}
 //		if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, icBuffer2, IC_bufferSize) != HAL_OK)
 //		{
 //			Error_Handler();
@@ -500,12 +503,11 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 //		  {
 //			  Error_Handler();
 //		  }
-	}
-	else if(htim->Instance == TIM2 && htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
-	{
-		bufferCount--;
-	}
-}
+//	else if(htim->Instance == TIM2 && htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
+//	{
+//		bufferCount--;
+//	}
+//}
 
 /*
  *  didnt be called after OC complete sending.
@@ -514,12 +516,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if (htim->Instance == TIM1)
 	{
+		HAL_TIM_Base_Stop_IT(&htim1);
 		if(swim.currState == SWIM_LISTEN_SYNCHRONIZATION)
 		{
 			bufferCount = 1000;
 		}
 		else if(swim.currState == SWIM_ACTIVATION)
 		{
+//			setTimeout(2);
 			setTimeout(3000);
 			swim.currState = SWIM_COMMAND_WOTF;
 //			swim_send_Zero();
@@ -530,9 +534,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			}
 		}
 
-		else if(swim.currState == SWIM_LISTEN_ACK)
+		else if(swim.currState == SWIM_COMMAND_WOTF)
 		{
-			bufferCount = 100;
+//			bufferCount = 100;
+//			swim.currState = SWIM_COMMAND_WOTF;
+////			swim_send_Zero();
+//			swim_send_header(SWIM_WOTF);
+//			if (HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, icBuffer, 6) != HAL_OK)
+//			{
+//				Error_Handler();
+//			}
 
 		}
 //		if (HAL_TIM_OC_Stop_DMA(&htim3, TIM_CHANNEL_1) != HAL_OK)
@@ -562,17 +573,30 @@ void setTimeout(uint16_t period_us)
 	HAL_TIM_Base_Start_IT(&htim1);
 }
 
-//void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
-//{
+void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
+{
 //	bufferCount++;
 //	if(bufferCount == 1)
 //		swim_send_Zero();
 //	else if(bufferCount == 2)
 //		swim_send_Zero();
 //	else
+	HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(STM8_POWER_GPIO_Port, STM8_POWER_Pin, GPIO_PIN_RESET);
+
+	swim_send_header(SWIM_WOTF);
+//	static int j = 0;
+//	if(j++ == 0)
+//	{
+////		HAL_Delay(1);
 //		swim_send_header(SWIM_WOTF);
-//
-//}
+//	}
+
+}
 
 /* USER CODE END 4 */
 
