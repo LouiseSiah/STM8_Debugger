@@ -4,14 +4,16 @@
  *  Created on: Aug 15, 2017
  *      Author: user2
  */
-
 #include "stm32f1xx_hal.h"
+#include "hardwareInterface.h"
 #include "swim.h"
-
+extern uint16_t count;
+extern uint32_t icBuffer[10];
+extern uint32_t forcedLow_buffer[18];
 TIM_HandleTypeDef htim3;
 TIM_OC_InitTypeDef sConfig;
 uint32_t header_buffer[10] = {};
-uint16_t count = 0;
+
 //uint32_t buffer_array[32] = {};
 //void configure_swim_out_array(uint32_t* array, uint8_t numOfBits, uint16_t sequenceInBin)
 //{
@@ -32,50 +34,8 @@ uint16_t count = 0;
 ////	return buffer_array;
 //}
 
-void configureAndStart_OC_DMA(uint16_t period,  uint32_t *array,  uint16_t size)
-{
-	htim3.Instance = TIM3;
-	htim3.Init.Period = period;//(period_16us * 16);//period_500us;//0xFFFF;// 14;
-	htim3.Init.RepetitionCounter = 0;
-	htim3.Init.Prescaler = 0;
-	htim3.Init.ClockDivision = 0;
-	htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-	if (HAL_TIM_OC_Init(&htim3) != HAL_OK)
-	{
-		Error_Handler();
-	}
 
-	sConfig.OCMode = TIM_OCMODE_TOGGLE;
-	if(count%2 == 1)
-		sConfig.OCPolarity = TIM_OCPOLARITY_LOW;
-	else
-		sConfig.OCPolarity = TIM_OCPOLARITY_HIGH;
-	sConfig.Pulse = 0;// uhTimerPeriod;// 0; //aCCValue_Buffer[0];//0;//aCCValue_Buffer[0];
-	if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfig, TIM_CHANNEL_1) != HAL_OK)
-	{
-		Error_Handler();
-	}
 
-	if (HAL_TIM_OC_Start_DMA(&htim3, TIM_CHANNEL_1, array, size) != HAL_OK)
-	{
-		Error_Handler();
-	}
-}
-
-uint16_t getOCR(uint16_t arr, uint16_t currentOCR, uint16_t period_us)
-{
-	uint16_t ocr = 0;
-	if((currentOCR + period_us) > arr)
-	{
-		ocr = (currentOCR + period_us) % arr;
-	}
-	else
-	{
-		ocr = currentOCR + period_us;
-	}
-
-	return ocr;
-}
 
 uint32_t swim_send_header(uint8_t command)
 {
@@ -175,3 +135,4 @@ void swim_send_Zero()
 	header_buffer[1] = LOW_SPEED_BIT_PRIOD;
 	configureAndStart_OC_DMA(LOW_SPEED_BIT_PRIOD, header_buffer, 2);
 }
+
