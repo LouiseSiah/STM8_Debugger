@@ -62,9 +62,8 @@ Swim swim;
 
 
 void configure_swim_out_array(uint32_t* array, uint8_t numOfBits, uint16_t sequenceInBin);
-//void configureAndStart_OC_DMA(uint16_t period,  uint32_t *array,  uint16_t size);
 uint32_t swim_send_header(uint8_t command);
-//uint16_t getOCR(uint16_t arr, uint16_t currentOCR, uint16_t period_us);
+uint32_t swim_send_byte(uint8_t byte);
 
 void swim_send_One();
 void swim_send_Zero();

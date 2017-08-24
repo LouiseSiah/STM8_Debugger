@@ -7,6 +7,7 @@
 
 #ifndef SWIMSM_H_
 #define SWIMSM_H_
+#include "swim.h"
 
 void swimSmHandler(Swim *swim, Event event);
 

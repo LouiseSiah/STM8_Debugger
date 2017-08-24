@@ -4,8 +4,12 @@
  *  Created on: Aug 22, 2017
  *      Author: user2
  */
-
+#include "stm32f1xx_hal.h"
 #include "swimSM.h"
+#include "hardwareInterface.h"
+extern uint32_t icBuffer[10];
+
+
 
 void swimSmHandler(Swim *swim, Event event)
 {
@@ -25,8 +29,11 @@ void swimSmHandler(Swim *swim, Event event)
 //
 //          forcedLow_buffer[17] = period_600us + 1;
 //          configureAndStart_OC_DMA(period_600us, forcedLow_buffer, OC_bufferSize);
+//    	  HAL_GPIO_WritePin(SWIM_RESET_OUT_GPIO_Port, SWIM_RESET_OUT_Pin, GPIO_PIN_RESET);
     	  startSwimEntrySequence();
+    	  setTimeout(6670);
           start_TIM2_CH2_IC_DMA(icBuffer, 10);
+          swim->currState = SWIM_LISTEN_SYNCHRONIZATION;
           break;
       case SWIM_LISTEN_SYNCHRONIZATION:
           swim_send_header(SWIM_WOTF);

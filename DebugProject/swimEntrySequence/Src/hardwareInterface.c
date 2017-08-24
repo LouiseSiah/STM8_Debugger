@@ -62,8 +62,8 @@ void startSwimEntrySequence(void)
 
 	//	  configure_entry_sequence();
 	configureAndStart_OC_DMA(period_600us, forcedLow_buffer, 18);
-	setTimeout(6670);
-	start_TIM2_CH2_IC_DMA(icBuffer,  10);
+//	setTimeout(6670);
+//	start_TIM2_CH2_IC_DMA(icBuffer,  10);
 }
 
 void configureAndStart_OC_DMA(uint16_t period,  uint32_t *array,  uint16_t size)
